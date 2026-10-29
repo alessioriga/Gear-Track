@@ -3,7 +3,6 @@
  * Application entry point for rendering equipment and loan data.
  * @module app
  */
-
 import { dataService } from './dataService.js';
 
 window.addEventListener("DOMContentLoaded", start);
@@ -11,12 +10,21 @@ window.addEventListener("DOMContentLoaded", start);
 /**
  * Render the equipment and loans.
  */
-
 function start() {
     renderEquipmentList();
     renderActiveLoans();
 }
 
+function createTextElement(elementName, text, className) {
+    const element = document.createElement(elementName);
+    element.textContent = text ?? '';
+
+    if (className) {
+        element.className = className;
+    }
+
+    return element;
+}
 /**
  * Render the equipment list into the page.
  * This loads all equipment items from localStorage via dataService,
