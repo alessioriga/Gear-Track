@@ -72,18 +72,53 @@ async function renderActiveLoans() {
     const equipment = await dataService.getEquipment();
 
     if (loans.length === 0) {
-        container.innerHTML = '<p>No active loans.</p>';
+        container.replaceChildren(
+            createTextElement('p', 'No active loans.')
+        );
         return;
     }
 
-    container.innerHTML = loans.map(loan => {
-        const item = equipment.find(e => e.id === loan.equipmentId);
-        return `
-    <div class="loan-card" data-loan-id="${loan.id}">
-        <h4>${item ? item.name : 'Unknown Equipment'}</h4>
-        <p><strong>Borrower:</strong> ${loan.borrowerName} (${loan.borrowerEmail})</p>
-        <p><strong>Due Date:</strong> ${loan.dueDate}</p>
-    </div>
-    `;
-    }).join('');
+    const fragment = document.createDocumentFragment();
+
+    loans.forEach(loan => {
+        const item = equipment.find(
+            equipmentItem => equipmentItem.id === loan.equipmentId
+        );
+
+        const card = document.createElement('div');
+        card.classList.add('loan-card');
+        card.dataset.loan.id;
+
+        const heading = createTextElement(
+            'h4', item ? item.name : 'Unknown Equipment'
+        );
+
+        const borrowerParagraph = document.createElement('p');
+        const borrowerLabel = createTextElement('strong', 'Borrower:');
+
+        borrowerParagraph.append(
+            borrowerLabel,
+            document.createTextNode(
+                `${loan.borrowerName} (${loan.borrowerEmail})`
+            )
+        );
+
+        const dueDateParagraph = document.createElement('p');
+        const dueDateLabel = createTextElement('strong', 'Due Date:');
+
+        dueDateParagraph.append(
+            dueDateLabel,
+            document.createTextNode(` ${loan.dueDate}`)
+        );
+
+        card.append(
+            heading,
+            borrowerParagraph,
+            dueDateParagraph
+        );
+
+        fragment.append(card);
+    });
+
+    container.replaceChildren(fragment);
 }
