@@ -17,12 +17,13 @@ function start() {
 }
 
 /**
- * Create an HTML element containing safe text.
- * Dynamic values are assigned through textContent, not innerHTML.
+ * GT-103: DOM-based XSS Mitigation
+ * Use textContent to display dynamic data safely instead of interpreting it as HTML.
+ * This helps prevent malicious input from executing JavaScript in the browser.
  *
  * @param {string} elementName - HTML element name.
  * @param {string} text - Text to display.
- * @param {string} [className] - CSS class.
+ * @param {string} [className] - The CSS class to assign to the element.
  * @returns {HTMLElement} The created element.
  */
 function createTextElement(elementName, text, className) {
@@ -37,9 +38,9 @@ function createTextElement(elementName, text, className) {
 }
 
 /**
- * Render the equipment list into the page.
- * This loads all equipment items from localStorage via dataService,
- * then creates DOM elements.
+ * Render the equipment list using safe DOM methods.
+ * Equipment names, categories and statuses are displayed as text
+ * rather than being interpreted as HTML.
  */
 async function renderEquipmentList() {
     const container = document.getElementById('equipment-list');
@@ -75,8 +76,9 @@ async function renderEquipmentList() {
 }
 
 /**
- * Render the list of active loans into the page.
- * It also looks up the equipment name for each loan.
+ * GT-103: Render loan information using safe DOM methods.
+ * Borrower names, email addresses and due dates are inserted as text nodes
+ * so that user-provided values are not interpreted as HTML.
  */
 async function renderActiveLoans() {
     const container = document.getElementById('active-loans-list');
