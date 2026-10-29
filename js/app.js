@@ -3,6 +3,7 @@
  * Application entry point for rendering equipment and loan data.
  * @module app
  */
+
 import { dataService } from './dataService.js';
 
 window.addEventListener("DOMContentLoaded", start);
@@ -15,6 +16,15 @@ function start() {
     renderActiveLoans();
 }
 
+/**
+ * Create an HTML element containing safe text.
+ * Dynamic values are assigned through textContent, not innerHTML.
+ *
+ * @param {string} elementName - HTML element name.
+ * @param {string} text - Text to display.
+ * @param {string} [className] - CSS class.
+ * @returns {HTMLElement} The created element.
+ */
 function createTextElement(elementName, text, className) {
     const element = document.createElement(elementName);
     element.textContent = text ?? '';
@@ -25,6 +35,7 @@ function createTextElement(elementName, text, className) {
 
     return element;
 }
+
 /**
  * Render the equipment list into the page.
  * This loads all equipment items from localStorage via dataService,
@@ -39,8 +50,9 @@ async function renderEquipmentList() {
     items.forEach(item => {
         const card = document.createElement('li');
         card.classList.add('equipment-card');
-        //Apply only recognised status class such as available or loaned
-        if (item.status === 'available' || item.status === 'loaded') {
+
+        // Apply only recognised status class such as available or loaned.
+        if (item.status === 'available' || item.status === 'loaned') {
             card.classList.add(`status-${item.status}`);
         }
 
@@ -48,7 +60,7 @@ async function renderEquipmentList() {
         const badge = createTextElement('span', item.category, 'badge');
 
         const statusParagraph = document.createElement('p');
-        statusParagraph.append(        
+        statusParagraph.append(
             document.createTextNode('Status: ')
         );
 
@@ -56,7 +68,7 @@ async function renderEquipmentList() {
         statusParagraph.append(statusText);
 
         card.append(heading, badge, statusParagraph);
-        fragment.append(card)
+        fragment.append(card);
     });
 
     container.replaceChildren(fragment);
@@ -87,10 +99,11 @@ async function renderActiveLoans() {
 
         const card = document.createElement('div');
         card.classList.add('loan-card');
-        card.dataset.loan.id;
+        card.dataset.loanId = loan.id;
 
         const heading = createTextElement(
-            'h4', item ? item.name : 'Unknown Equipment'
+            'h4',
+            item ? item.name : 'Unknown Equipment'
         );
 
         const borrowerParagraph = document.createElement('p');
@@ -99,7 +112,7 @@ async function renderActiveLoans() {
         borrowerParagraph.append(
             borrowerLabel,
             document.createTextNode(
-                `${loan.borrowerName} (${loan.borrowerEmail})`
+                ` ${loan.borrowerName} (${loan.borrowerEmail})`
             )
         );
 
