@@ -28,18 +28,38 @@ function createTextElement(elementName, text, className) {
 /**
  * Render the equipment list into the page.
  * This loads all equipment items from localStorage via dataService,
- * then creates HTML cards for each item.
+ * then creates DOM elements.
  */
 async function renderEquipmentList() {
     const container = document.getElementById('equipment-list');
     const items = await dataService.getEquipment();
 
-    container.innerHTML = items.map(item => `
-    <li class="equipment-card status-${item.status}">
-        <h3>${item.name}</h3>
-        <span class="badge">${item.category}</span>
-        <p>Status: <strong>${item.status}</strong></p>
-    </li>`).join('');
+    const fragment = document.createDocumentFragment();
+
+    items.forEach(item => {
+        const card = document.createElement('li');
+        card.classList.add('equipment-card');
+        //Apply only recognised status class such as available or loaned
+        if (item.status === 'available' || item.status === 'loaded') {
+            card.classList.add(`status-${item.status}`);
+        }
+
+        const heading = createTextElement('h3', item.name);
+        const badge = createTextElement('span', item.category, 'badge');
+
+        const statusParagraph = document.createElement('p');
+        statusParagraph.append(        
+            document.createTextNode('Status: ')
+        );
+
+        const statusText = createTextElement('strong', item.status);
+        statusParagraph.append(statusText);
+
+        card.append(heading, badge, statusParagraph);
+        fragment.append(card)
+    });
+
+    container.replaceChildren(fragment);
 }
 
 /**
