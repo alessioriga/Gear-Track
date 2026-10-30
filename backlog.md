@@ -52,7 +52,7 @@ Visually flag active loans past their return date and display an overdue warning
 
 ## [GT-106] Feature: Live Inventory Search & Debouncing (Complexity: Medium)
 **Description:**
-Add a real-time search bar above the equipment list so staff can quickly locate specific euipment by name or ID without reloading the page.
+Add a real-time search bar above the equipment list so staff can quickly locate specific equipment by name or ID without reloading the page.
 
 **Acceptance Criteria:**
 - A search input field is added above the equipment list.
