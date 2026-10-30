@@ -29,7 +29,7 @@ Add a category dropdown at the top of the Equipment section so staff can filter 
 
 ## [GT-103] Security Refactor: DOM-based XSS Mitigation (Complexity: Medium)
 
-**Status:** In Progress
+**Status:** Done
 
 **Description:**
 The current UI rendering in app.js uses raw template literals injected directly into innerHTML. If user input contains malicious HTML or script tags (e.g., in borrowerName or equipment.name), it will execute in the browser. Refactor the rendering logic to prevent DOM-based XSS.
