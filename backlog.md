@@ -3,6 +3,9 @@
 Complete GT-101 to GT-104 and select 2 from GT-105 to GT-108
 
 ## [GT-101] Feature: Checkout Form Modal (Complexity: Low)
+
+**Status:** To Do
+
 **Description:**
 Add a "Checkout Equipment" button next to available equipment items. Clicking this button opens a simple form modal allowing department staff to initiate a loan.
 
@@ -13,6 +16,9 @@ Add a "Checkout Equipment" button next to available equipment items. Clicking th
 - On successful submit, the modal closes, and both the Equipment List and Active Loans sections refresh without a page reload.
 
 ## [GT-102] Feature: Equipment Category Filtering (Complexity: Low)
+
+**Status:** To Do
+
 **Description:**
 Add a category dropdown at the top of the Equipment section so staff can filter items.
 
@@ -22,6 +28,9 @@ Add a category dropdown at the top of the Equipment section so staff can filter 
 - The system dynamically generates categories from available data rather than hardcoding values in HTML.
 
 ## [GT-103] Security Refactor: DOM-based XSS Mitigation (Complexity: Medium)
+
+**Status:** In Progress
+
 **Description:**
 The current UI rendering in app.js uses raw template literals injected directly into innerHTML. If user input contains malicious HTML or script tags (e.g., in borrowerName or equipment.name), it will execute in the browser. Refactor the rendering logic to prevent DOM-based XSS.
 
@@ -31,6 +40,9 @@ The current UI rendering in app.js uses raw template literals injected directly 
 - Add a section to your walkthrough explaining why innerHTML interpolation with unsanitised user input poses a security risk.
 
 ## [GT-104] Feature: Return Equipment Flow (Complexity: Medium)
+
+**Status:** To Do
+
 **Description:**
 Implement a "Return" action on active loan items to mark equipment as returned and free it up for future loans.
 
@@ -41,6 +53,9 @@ Implement a "Return" action on active loan items to mark equipment as returned a
 - The card moves out of the Active Loans view immediately.
 
 ## [GT-105] Feature: Overdue Loan Highlight & Notification (Complexity: Medium-High)
+
+**Status:** To Do
+
 **Description:**
 Visually flag active loans past their return date and display an overdue warning counter on the dashboard.
 
@@ -51,6 +66,9 @@ Visually flag active loans past their return date and display an overdue warning
 
 
 ## [GT-106] Feature: Live Inventory Search & Debouncing (Complexity: Medium)
+
+**Status:** To Do
+
 **Description:**
 Add a real-time search bar above the equipment list so staff can quickly locate specific equipment by name or ID without reloading the page.
 
@@ -63,6 +81,9 @@ Add a real-time search bar above the equipment list so staff can quickly locate 
 ---
 
 ## [GT-107] Feature: Department Usage Stats Dashboard (Complexity: High)
+
+**Status:** To Do
+
 **Description:**
 Add an analytics summary bar at the top of the application to give staff immediate visibility into department inventory utilisation.
 
@@ -75,6 +96,9 @@ Add an analytics summary bar at the top of the application to give staff immedia
 ---
 
 ## [GT-108] Feature: Export Active Loans to CSV (Complexity: High)
+
+**Status:** To Do
+
 **Description:**
 Provide an "Export to CSV" action on the Active Loans panel allowing staff to download a local snapshot of current active loans for record-keeping.
 
