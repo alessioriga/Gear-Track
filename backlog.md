@@ -17,7 +17,7 @@ Add a "Checkout Equipment" button next to available equipment items. Clicking th
 
 ## [GT-102] Feature: Equipment Category Filtering (Complexity: Low)
 
-**Status:** In Progress
+**Status:** Done
 
 **Description:**
 Add a category dropdown at the top of the Equipment section so staff can filter items.
