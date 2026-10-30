@@ -9,11 +9,16 @@ import { dataService } from './dataService.js';
 window.addEventListener("DOMContentLoaded", start);
 
 /**
- * Render the equipment and loans.
+ * Start the application and initialise event listeners.
  */
 function start() {
     renderEquipmentList();
     renderActiveLoans();
+
+    // GT-102: Listen for changes to the equipment category via .filter() method.
+    const categoryFilter = document.getElementById('category-filter');
+
+    categoryFilter.addEventListener('change', renderEquipmentList);
 }
 
 /**
@@ -44,11 +49,19 @@ function createTextElement(elementName, text, className) {
  */
 async function renderEquipmentList() {
     const container = document.getElementById('equipment-list');
+    const categoryFilter = document.getElementById('category-filter');
+
     const items = await dataService.getEquipment();
+    const selectedCategory = categoryFilter.value;
+
+    // Filter equipment when a specific category is selected in the dropdown menu.
+    const filteredItems = selectedCategory === 'all'
+    ? items
+    : items.filter(item => item.category === selectedCategory);
 
     const fragment = document.createDocumentFragment();
 
-    items.forEach(item => {
+    filteredItems.forEach(item => {
         const card = document.createElement('li');
         card.classList.add('equipment-card');
 
