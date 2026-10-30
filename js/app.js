@@ -15,7 +15,7 @@ function start() {
     renderEquipmentList();
     renderActiveLoans();
 
-    // GT-102: Listen for changes to the equipment category via .filter() method.
+    // GT-102: Listen for changes to the selected equipment category.
     const categoryFilter = document.getElementById('category-filter');
 
     categoryFilter.addEventListener('change', renderEquipmentList);
@@ -56,8 +56,8 @@ async function renderEquipmentList() {
 
     // Filter equipment when a specific category is selected in the dropdown menu.
     const filteredItems = selectedCategory === 'all'
-    ? items
-    : items.filter(item => item.category === selectedCategory);
+        ? items
+        : items.filter(item => item.category === selectedCategory);
 
     const fragment = document.createDocumentFragment();
 
