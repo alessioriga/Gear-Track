@@ -1,40 +1,38 @@
-<!-- index.html -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GearTrack - Equipment Loans</title>
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/components.css">
-</head>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/components.css" />
+  </head>
 
-<body>
+  <body>
     <header class="app-header">
-        <h1>GearTrack Department Manager</h1>
+      <h1>GearTrack Department Manager</h1>
     </header>
 
     <main class="dashboard">
-        <section class="panel">
-            <h2>Available Equipment</h2>
-            <label for="category-filter">Filter by category:</label>
-            <select id="category-filter">
-                <option value="all">All Categories</option>
-                <option value="Cameras">Cameras</option>
-                <option value="Accessories">Accessories</option>
-                <option value="Laptops">Laptops/option>
-            </select>
-            <ul id="equipment-list" class="item-list"></ul>
-        </section>
+      <section class="panel">
+        <h2>Available Equipment</h2>
+        <!-- GT-102: Equipment Category Filtering (it provides a dropdown menu allowing users to filter equipment by category or display all equipment). -->
+        <label for="category-filter">Filter by category:</label>
+        <select id="category-filter">
+          <option value="all">All Categories</option>
+          <option value="Cameras">Cameras</option>
+          <option value="Accessories">Accessories</option>
+          <option value="Laptops">Laptops/option></option>
+        </select>
+        <ul id="equipment-list" class="item-list"></ul>
+      </section>
 
-        <section class="panel">
-            <h2>Active Loans</h2>
-            <div id="active-loans-list" class="item-list"></div>
-        </section>
+      <section class="panel">
+        <h2>Active Loans</h2>
+        <div id="active-loans-list" class="item-list"></div>
+      </section>
     </main>
 
     <script type="module" src="js/app.js"></script>
-</body>
-
+  </body>
 </html>
