@@ -32,6 +32,25 @@
         <div id="active-loans-list" class="item-list"></div>
       </section>
     </main>
+    <!-- GT-101: Checkout Form Modal (it allows staff to enter borrower details when checking out equipment). -->
+     <dialog id="checkout-modal">
+      <h2>Checkout Equipment</h2>
+
+      <form id="checkout-form">
+        <label for="borrower-name">Borrower Name:</label>
+        <input type="text" name="borrowerName" id="borrower-name" required>
+
+        <label for="borrower-email">Borrower Email:</label>
+        <input type="email" name="borrower-email" id="borrower-email" required>
+
+        <label for="return-date">Return Date:</label>
+        <input type="date" name="dueDate" id="return-date" required>
+
+        <button type="submit">Confirm Checkout</button>
+        <button type="button" id="cancel-checkout">Cancel</button>
+      </form>
+     </dialog>
+
 
     <script type="module" src="js/app.js"></script>
   </body>
