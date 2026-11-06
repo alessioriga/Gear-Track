@@ -82,6 +82,20 @@ async function renderEquipmentList() {
         statusParagraph.append(statusText);
 
         card.append(heading, badge, statusParagraph);
+        
+        if (item.status === 'available') {
+            const checkoutButton = document.createElement('button');
+            checkoutButton.type = 'button';
+            checkoutButton.textContent = 'Checkout';
+            checkoutButton.classList.add('checkout-button');
+
+            checkoutButton.addEventListener('click', () => {
+                openCheckoutModal(item.id);
+            });
+
+            card.append(checkoutButton);
+        }
+
         fragment.append(card);
     });
 
