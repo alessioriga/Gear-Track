@@ -164,3 +164,14 @@ async function renderActiveLoans() {
 
     container.replaceChildren(fragment);
 }
+
+function openCheckoutModal(equipmentId) {
+    const modal = document.getElementById('checkout-modal');
+    const form = document.getElementById('checkout-form');
+
+    form.dataset.equipmentId = equipmentId;
+
+    form.reset();
+
+    modal.showModal();
+}
