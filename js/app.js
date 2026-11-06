@@ -19,6 +19,13 @@ function start() {
     const categoryFilter = document.getElementById('category-filter');
 
     categoryFilter.addEventListener('change', renderEquipmentList);
+
+    const cancelButton = document.getElementById('cancel-checkout');
+    const checkoutModal = document.getElementById('checkout-modal');
+
+    cancelButton.addEventListener('click', () => {
+        checkoutModal.close();
+    });
 }
 
 /**
