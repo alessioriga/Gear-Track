@@ -4,7 +4,7 @@ Complete GT-101 to GT-104 and select 2 from GT-105 to GT-108
 
 ## [GT-101] Feature: Checkout Form Modal (Complexity: Low)
 
-**Status:** In Progress
+**Status:** Done
 
 **Description:**
 Add a "Checkout Equipment" button next to available equipment items. Clicking this button opens a simple form modal allowing department staff to initiate a loan.
