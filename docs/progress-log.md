@@ -52,3 +52,39 @@ I chose to work on GT-102 after addressing the security issue in GT-103. Categor
 Learned how to use event listeners and JavaScript's `filter()` method to display data based on a user's selection.
 
 **Next step:** GT-101 – Checkout Form Modal.
+
+## GT-101 – Checkout Form Modal
+
+**Reason for prioritisation:**
+
+I decided to work on GT-101 after completing the security improvements and category filtering features. The checkout functionality is an important part of the application because it allows department staff to create new equipment loans. Implementing this feature before the return process also provides the functionality needed to test the complete loan management workflow.
+
+**Status:** Implementation and functional testing completed.
+
+**Work completed:**
+- Added a Checkout button for equipment marked as available.
+- Created a modal form using the HTML `<dialog>` element.
+- Added fields for Borrower Name, Borrower Email and Return Date.
+- Implemented a Cancel button to close the modal without saving any data.
+- Connected the form submission to `dataService.saveLoan()`.
+- Updated the Equipment List and Active Loans sections automatically after a successful checkout.
+- Preserved the safe DOM rendering methods introduced in GT-103.
+
+**Testing:**
+- Confirmed that the Checkout button appears only for available equipment.
+- Confirmed that clicking Checkout opens the modal form.
+- Confirmed that the Cancel button closes the modal.
+- Tested the checkout form and confirmed that submitting it successfully creates a loan.
+- Confirmed that the selected equipment changes from available to loaned.
+- Confirmed that the new loan appears in the Active Loans section without refreshing the page.
+
+**Problems encountered:**
+- An incorrect `addEventListener()` statement prevented the form submission handler from being registered.
+- Part of the checkout logic was initially placed outside the `handleCheckout()` function, causing a `ReferenceError`.
+- Corrected the event listener and moved the checkout logic inside the appropriate function.
+
+**Learning outcomes:**
+
+I learned how to create and control an HTML modal using JavaScript, handle form submissions with event listeners and use asynchronous functions to save data. I also improved my understanding of JavaScript function scope and how browser Developer Tools can help identify and resolve errors.
+
+**Next step:** GT-104 – Return Equipment Flow.
