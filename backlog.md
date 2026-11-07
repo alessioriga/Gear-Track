@@ -54,7 +54,7 @@ Implement a "Return" action on active loan items to mark equipment as returned a
 
 ## [GT-105] Feature: Overdue Loan Highlight & Notification (Complexity: Medium-High)
 
-**Status:** To Do
+**Status:** In Progress
 
 **Description:**
 Visually flag active loans past their return date and display an overdue warning counter on the dashboard.
