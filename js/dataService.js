@@ -118,5 +118,35 @@ export const dataService = {
         }
 
         return newLoan;
+    },
+
+    async returnLoan(loanId) {
+        const loans = await this.getLoans();
+
+        const loan = loans.find(
+            loan => loan.id === loanId && loan.status === 'active'
+        );
+
+        if (!loan) {
+            return false;
+        }
+
+        const equipment = await this.getEquipment();
+        const item = equipment.find(
+            item => item.id === loan.equipmentId
+        );
+
+        if (!item) {
+            return false;
+        }
+
+        loan.status = 'returned';
+        item.status = 'available';
+
+        localStorage.setItem(STORAGE_KEYS.LOANS, JSON.stringify(loans));
+        localStorage.setItem(STORAGE_KEYS.EQUIPMENT, JSON.stringify(equipment));
+
+        return true;
+        
     }
 };
