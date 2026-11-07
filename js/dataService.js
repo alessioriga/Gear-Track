@@ -10,6 +10,7 @@ const STORAGE_KEYS = {
 };
 
 /**
+ * Represents an equipment item in the inventory.
  * @typedef {Object} Equipment
  * @property {string} id - Unique equipment identifier.
  * @property {string} name - Human-readable equipment name.
@@ -18,6 +19,7 @@ const STORAGE_KEYS = {
  */
 
 /**
+ * Represents an equipment loan record.
  * @typedef {Object} Loan
  * @property {string} id - Unique loan identifier.
  * @property {string} equipmentId - The ID of the equipment being loaned.
@@ -28,6 +30,7 @@ const STORAGE_KEYS = {
  */
 
 /**
+ * Represents the information required to create a new loan.
  * @typedef {Object} NewLoanData
  * @property {string} equipmentId - The ID of the equipment being loaned.
  * @property {string} borrowerName - Name of the person borrowing the equipment.
@@ -63,12 +66,13 @@ const initialLoans = [
 
 /**
  * Seed localStorage with default equipment and loans if none exist yet.
- * This ensures the app has initial data to display on first load.
+ * This ensures the application has initial data to display on first load.
  */
 function seedInitialData() {
     if (!localStorage.getItem(STORAGE_KEYS.EQUIPMENT)) {
         localStorage.setItem(STORAGE_KEYS.EQUIPMENT, JSON.stringify(initialEquipment));
     }
+
     if (!localStorage.getItem(STORAGE_KEYS.LOANS)) {
         localStorage.setItem(STORAGE_KEYS.LOANS, JSON.stringify(initialLoans));
     }
@@ -76,6 +80,9 @@ function seedInitialData() {
 
 seedInitialData();
 
+/**
+ * Provides methods for managing equipment and loan data in localStorage.
+ */
 export const dataService = {
     /**
      * Load equipment data from localStorage.
@@ -96,23 +103,31 @@ export const dataService = {
     },
 
     /**
-     * Save a new loan record and update the equipment status.
+     * GT-101: Save a new loan record and update the equipment status.
+     *
      * @param {NewLoanData} loanData - Information about the new loan.
      * @returns {Promise<Loan>} The newly created loan record.
      */
     async saveLoan(loanData) {
         const loans = await this.getLoans();
+
+        // Create a new active loan record.
         const newLoan = {
             id: `LN-${Date.now().toString().slice(-4)}`,
             status: 'active',
             ...loanData
         };
+
+        // Save the new loan to localStorage.
         loans.push(newLoan);
         localStorage.setItem(STORAGE_KEYS.LOANS, JSON.stringify(loans));
 
+        // Find the equipment associated with the new loan.
         const equipment = await this.getEquipment();
         const item = equipment.find(e => e.id === loanData.equipmentId);
+
         if (item) {
+            // Mark the equipment as loaned.
             item.status = 'loaned';
             localStorage.setItem(STORAGE_KEYS.EQUIPMENT, JSON.stringify(equipment));
         }
@@ -120,33 +135,44 @@ export const dataService = {
         return newLoan;
     },
 
+    /**
+     * GT-104: Mark an active loan as returned and make its equipment available.
+     *
+     * @param {string} loanId - ID of the loan being returned.
+     * @returns {Promise<boolean>} True if the loan was returned successfully, otherwise false.
+     */
     async returnLoan(loanId) {
         const loans = await this.getLoans();
 
+        // Find the active loan matching the provided ID.
         const loan = loans.find(
             loan => loan.id === loanId && loan.status === 'active'
         );
 
+        // Stop if the loan does not exist or has already been returned.
         if (!loan) {
             return false;
         }
 
+        // Find the equipment associated with the loan.
         const equipment = await this.getEquipment();
         const item = equipment.find(
             item => item.id === loan.equipmentId
         );
 
+        // Stop if the associated equipment cannot be found.
         if (!item) {
             return false;
         }
 
+        // Update the loan and equipment statuses.
         loan.status = 'returned';
         item.status = 'available';
 
+        // Save the updated information to localStorage.
         localStorage.setItem(STORAGE_KEYS.LOANS, JSON.stringify(loans));
         localStorage.setItem(STORAGE_KEYS.EQUIPMENT, JSON.stringify(equipment));
 
         return true;
-        
     }
 };
