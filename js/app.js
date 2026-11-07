@@ -124,7 +124,9 @@ async function renderEquipmentList() {
  */
 async function renderActiveLoans() {
   const container = document.getElementById("active-loans-list");
-  const loans = await dataService.getLoans();
+  const loans = (await dataService.getLoans()).filter(
+    (loan) => loan.status === "active",
+  );
   const equipment = await dataService.getEquipment();
 
   if (loans.length === 0) {
@@ -166,6 +168,19 @@ async function renderActiveLoans() {
     );
 
     card.append(heading, borrowerParagraph, dueDateParagraph);
+
+    if (loan.status === "active") {
+      const returnButton = document.createElement("button");
+      returnButton.type = "button";
+      returnButton.textContent = "Mark Returned";
+      returnButton.classList.add("return-button");
+
+      returnButton.addEventListener("click", () => {
+        handleReturn(loan.id);
+      });
+
+      card.append(returnButton);
+    }
 
     fragment.append(card);
   });
@@ -228,5 +243,22 @@ async function handleCheckout(event) {
     // Report any errors encountered during the checkout process.
     console.error("Unable to save the loan:", error);
     alert("The checkout could not be completed. Please try again.");
+  }
+}
+
+async function handleReturn(loanId) {
+  try {
+    const success = await dataService.returnLoan(loanId);
+
+    if (!success) {
+      alert("The loan could not be returned");
+      return;
+    }
+
+    await renderEquipmentList();
+    await renderActiveLoans();
+  } catch (error) {
+    console.error("Unable to return the loan:", error);
+    alert("An error occurred while returning the equipment.");
   }
 }
