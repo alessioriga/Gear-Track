@@ -41,7 +41,7 @@ The current UI rendering in app.js uses raw template literals injected directly 
 
 ## [GT-104] Feature: Return Equipment Flow (Complexity: Medium)
 
-**Status:** In Progress
+**Status:** Done
 
 **Description:**
 Implement a "Return" action on active loan items to mark equipment as returned and free it up for future loans.
