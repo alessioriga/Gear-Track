@@ -14,25 +14,30 @@ function start() {
   renderEquipmentList();
   renderActiveLoans();
 
-  // GT-102: Listen for changes to the selected equipment category.
+  // GT-102: Get the category filter used to filter equipment.
   const categoryFilter = document.getElementById("category-filter");
+
+  // GT-101: Get the checkout form and modal controls.
   const cancelButton = document.getElementById("cancel-checkout");
   const checkoutModal = document.getElementById("checkout-modal");
   const checkoutForm = document.getElementById("checkout-form");
 
+  // GT-102: Update the equipment list when the selected category changes.
   categoryFilter.addEventListener("change", renderEquipmentList);
 
+  // GT-101: Close the checkout modal without saving a loan.
   cancelButton.addEventListener("click", () => {
     checkoutModal.close();
   });
 
+  // GT-101: Handle the checkout form submission.
   checkoutForm.addEventListener("submit", handleCheckout);
 }
 
 /**
  * GT-103: DOM-based XSS Mitigation
- * Use textContent to display dynamic data safely instead of interpreting it as HTML.
- * This helps prevent malicious input from executing JavaScript in the browser.
+ * Create an HTML element and insert dynamic content safely using textContent.
+ * This prevents user-provided text from being interpreted as HTML.
  *
  * @param {string} elementName - HTML element name.
  * @param {string} text - Text to display.
@@ -52,8 +57,9 @@ function createTextElement(elementName, text, className) {
 
 /**
  * Render the equipment list using safe DOM methods.
- * Equipment names, categories and statuses are displayed as text
- * rather than being interpreted as HTML.
+ * GT-102: Filter equipment based on the selected category.
+ * GT-101: Display a Checkout button for available equipment.
+ * GT-103: Display dynamic equipment information safely.
  */
 async function renderEquipmentList() {
   const container = document.getElementById("equipment-list");
@@ -62,7 +68,7 @@ async function renderEquipmentList() {
   const items = await dataService.getEquipment();
   const selectedCategory = categoryFilter.value;
 
-  // Filter equipment when a specific category is selected in the dropdown menu.
+  // GT-102: Filter equipment by category or display all items.
   const filteredItems =
     selectedCategory === "all"
       ? items
@@ -74,7 +80,7 @@ async function renderEquipmentList() {
     const card = document.createElement("li");
     card.classList.add("equipment-card");
 
-    // Apply only recognised status class such as available or loaned.
+    // GT-103: Apply only recognised equipment status classes.
     if (item.status === "available" || item.status === "loaned") {
       card.classList.add(`status-${item.status}`);
     }
@@ -90,12 +96,14 @@ async function renderEquipmentList() {
 
     card.append(heading, badge, statusParagraph);
 
+    // GT-101: Display the Checkout button only for available equipment.
     if (item.status === "available") {
       const checkoutButton = document.createElement("button");
       checkoutButton.type = "button";
       checkoutButton.textContent = "Checkout";
       checkoutButton.classList.add("checkout-button");
 
+      // Open the checkout modal for the selected equipment.
       checkoutButton.addEventListener("click", () => {
         openCheckoutModal(item.id);
       });
@@ -106,13 +114,13 @@ async function renderEquipmentList() {
     fragment.append(card);
   });
 
+  // GT-103: Replace the existing content with safely created DOM elements.
   container.replaceChildren(fragment);
 }
 
 /**
  * GT-103: Render loan information using safe DOM methods.
- * Borrower names, email addresses and due dates are inserted as text nodes
- * so that user-provided values are not interpreted as HTML.
+ * Borrower names, email addresses and due dates are inserted as text nodes so that user-provided values are not interpreted as HTML.
  */
 async function renderActiveLoans() {
   const container = document.getElementById("active-loans-list");
@@ -127,6 +135,7 @@ async function renderActiveLoans() {
   const fragment = document.createDocumentFragment();
 
   loans.forEach((loan) => {
+    // Find the equipment associated with the loan.
     const item = equipment.find(
       (equipmentItem) => equipmentItem.id === loan.equipmentId,
     );
@@ -164,23 +173,33 @@ async function renderActiveLoans() {
   container.replaceChildren(fragment);
 }
 
+/**
+ * GT-101: Open the checkout modal for the selected equipment.
+ * Store the equipment ID and reset the form before displaying it.
+ *
+ * @param {string} equipmentId - ID of the equipment being checked out.
+ */
 function openCheckoutModal(equipmentId) {
   const modal = document.getElementById("checkout-modal");
   const form = document.getElementById("checkout-form");
 
+  // Store the selected equipment ID for the form submission.
   form.dataset.equipmentId = equipmentId;
 
+  // Clear any previously entered borrower details.
   form.reset();
 
   modal.showModal();
 }
+
 /**
  * GT-101: Handle checkout form submission.
- * Save the loan and update the equipment and active loans sections.
- * @param {SubmitEvent} event - The checkout form submission event. 
+ * Save the loan and refresh the equipment and active loans sections without reloading the page.
+ *
+ * @param {SubmitEvent} event - The checkout form submission event.
  */
 async function handleCheckout(event) {
-  // Prevents the page from reloading when submitting the form.
+  // Prevent the page from reloading when submitting the form.
   event.preventDefault();
 
   const form = event.currentTarget;
@@ -197,7 +216,8 @@ async function handleCheckout(event) {
   try {
     // GT-101: Save the loan and update the equipment status.
     await dataService.saveLoan(loanData);
-    // Close the modal and clear the form after saving.
+
+    // Close the modal and clear the form after a successful checkout.
     modal.close();
     form.reset();
 
@@ -205,6 +225,7 @@ async function handleCheckout(event) {
     await renderEquipmentList();
     await renderActiveLoans();
   } catch (error) {
+    // Report any errors encountered during the checkout process.
     console.error("Unable to save the loan:", error);
     alert("The checkout could not be completed. Please try again.");
   }
