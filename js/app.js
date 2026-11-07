@@ -1,10 +1,9 @@
-
 /**
  * Application entry point for rendering equipment and loan data.
  * @module app
  */
 
-import { dataService } from './dataService.js';
+import { dataService } from "./dataService.js";
 
 window.addEventListener("DOMContentLoaded", start);
 
@@ -12,20 +11,22 @@ window.addEventListener("DOMContentLoaded", start);
  * Start the application and initialise event listeners.
  */
 function start() {
-    renderEquipmentList();
-    renderActiveLoans();
+  renderEquipmentList();
+  renderActiveLoans();
 
-    // GT-102: Listen for changes to the selected equipment category.
-    const categoryFilter = document.getElementById('category-filter');
+  // GT-102: Listen for changes to the selected equipment category.
+  const categoryFilter = document.getElementById("category-filter");
+  const cancelButton = document.getElementById("cancel-checkout");
+  const checkoutModal = document.getElementById("checkout-modal");
+  const checkoutForm = document.getElementById("checkout-form");
 
-    categoryFilter.addEventListener('change', renderEquipmentList);
+  categoryFilter.addEventListener("change", renderEquipmentList);
 
-    const cancelButton = document.getElementById('cancel-checkout');
-    const checkoutModal = document.getElementById('checkout-modal');
+  cancelButton.addEventListener("click", () => {
+    checkoutModal.close();
+  });
 
-    cancelButton.addEventListener('click', () => {
-        checkoutModal.close();
-    });
+  checkoutForm.addEventListener("submit", handleCheckout);
 }
 
 /**
@@ -39,14 +40,14 @@ function start() {
  * @returns {HTMLElement} The created element.
  */
 function createTextElement(elementName, text, className) {
-    const element = document.createElement(elementName);
-    element.textContent = text ?? '';
+  const element = document.createElement(elementName);
+  element.textContent = text ?? "";
 
-    if (className) {
-        element.className = className;
-    }
+  if (className) {
+    element.className = className;
+  }
 
-    return element;
+  return element;
 }
 
 /**
@@ -55,58 +56,57 @@ function createTextElement(elementName, text, className) {
  * rather than being interpreted as HTML.
  */
 async function renderEquipmentList() {
-    const container = document.getElementById('equipment-list');
-    const categoryFilter = document.getElementById('category-filter');
+  const container = document.getElementById("equipment-list");
+  const categoryFilter = document.getElementById("category-filter");
 
-    const items = await dataService.getEquipment();
-    const selectedCategory = categoryFilter.value;
+  const items = await dataService.getEquipment();
+  const selectedCategory = categoryFilter.value;
 
-    // Filter equipment when a specific category is selected in the dropdown menu.
-    const filteredItems = selectedCategory === 'all'
-        ? items
-        : items.filter(item => item.category === selectedCategory);
+  // Filter equipment when a specific category is selected in the dropdown menu.
+  const filteredItems =
+    selectedCategory === "all"
+      ? items
+      : items.filter((item) => item.category === selectedCategory);
 
-    const fragment = document.createDocumentFragment();
+  const fragment = document.createDocumentFragment();
 
-    filteredItems.forEach(item => {
-        const card = document.createElement('li');
-        card.classList.add('equipment-card');
+  filteredItems.forEach((item) => {
+    const card = document.createElement("li");
+    card.classList.add("equipment-card");
 
-        // Apply only recognised status class such as available or loaned.
-        if (item.status === 'available' || item.status === 'loaned') {
-            card.classList.add(`status-${item.status}`);
-        }
+    // Apply only recognised status class such as available or loaned.
+    if (item.status === "available" || item.status === "loaned") {
+      card.classList.add(`status-${item.status}`);
+    }
 
-        const heading = createTextElement('h3', item.name);
-        const badge = createTextElement('span', item.category, 'badge');
+    const heading = createTextElement("h3", item.name);
+    const badge = createTextElement("span", item.category, "badge");
 
-        const statusParagraph = document.createElement('p');
-        statusParagraph.append(
-            document.createTextNode('Status: ')
-        );
+    const statusParagraph = document.createElement("p");
+    statusParagraph.append(document.createTextNode("Status: "));
 
-        const statusText = createTextElement('strong', item.status);
-        statusParagraph.append(statusText);
+    const statusText = createTextElement("strong", item.status);
+    statusParagraph.append(statusText);
 
-        card.append(heading, badge, statusParagraph);
-        
-        if (item.status === 'available') {
-            const checkoutButton = document.createElement('button');
-            checkoutButton.type = 'button';
-            checkoutButton.textContent = 'Checkout';
-            checkoutButton.classList.add('checkout-button');
+    card.append(heading, badge, statusParagraph);
 
-            checkoutButton.addEventListener('click', () => {
-                openCheckoutModal(item.id);
-            });
+    if (item.status === "available") {
+      const checkoutButton = document.createElement("button");
+      checkoutButton.type = "button";
+      checkoutButton.textContent = "Checkout";
+      checkoutButton.classList.add("checkout-button");
 
-            card.append(checkoutButton);
-        }
+      checkoutButton.addEventListener("click", () => {
+        openCheckoutModal(item.id);
+      });
 
-        fragment.append(card);
-    });
+      card.append(checkoutButton);
+    }
 
-    container.replaceChildren(fragment);
+    fragment.append(card);
+  });
+
+  container.replaceChildren(fragment);
 }
 
 /**
@@ -115,70 +115,97 @@ async function renderEquipmentList() {
  * so that user-provided values are not interpreted as HTML.
  */
 async function renderActiveLoans() {
-    const container = document.getElementById('active-loans-list');
-    const loans = await dataService.getLoans();
-    const equipment = await dataService.getEquipment();
+  const container = document.getElementById("active-loans-list");
+  const loans = await dataService.getLoans();
+  const equipment = await dataService.getEquipment();
 
-    if (loans.length === 0) {
-        container.replaceChildren(
-            createTextElement('p', 'No active loans.')
-        );
-        return;
-    }
+  if (loans.length === 0) {
+    container.replaceChildren(createTextElement("p", "No active loans."));
+    return;
+  }
 
-    const fragment = document.createDocumentFragment();
+  const fragment = document.createDocumentFragment();
 
-    loans.forEach(loan => {
-        const item = equipment.find(
-            equipmentItem => equipmentItem.id === loan.equipmentId
-        );
+  loans.forEach((loan) => {
+    const item = equipment.find(
+      (equipmentItem) => equipmentItem.id === loan.equipmentId,
+    );
 
-        const card = document.createElement('div');
-        card.classList.add('loan-card');
-        card.dataset.loanId = loan.id;
+    const card = document.createElement("div");
+    card.classList.add("loan-card");
+    card.dataset.loanId = loan.id;
 
-        const heading = createTextElement(
-            'h4',
-            item ? item.name : 'Unknown Equipment'
-        );
+    const heading = createTextElement(
+      "h4",
+      item ? item.name : "Unknown Equipment",
+    );
 
-        const borrowerParagraph = document.createElement('p');
-        const borrowerLabel = createTextElement('strong', 'Borrower:');
+    const borrowerParagraph = document.createElement("p");
+    const borrowerLabel = createTextElement("strong", "Borrower:");
 
-        borrowerParagraph.append(
-            borrowerLabel,
-            document.createTextNode(
-                ` ${loan.borrowerName} (${loan.borrowerEmail})`
-            )
-        );
+    borrowerParagraph.append(
+      borrowerLabel,
+      document.createTextNode(` ${loan.borrowerName} (${loan.borrowerEmail})`),
+    );
 
-        const dueDateParagraph = document.createElement('p');
-        const dueDateLabel = createTextElement('strong', 'Due Date:');
+    const dueDateParagraph = document.createElement("p");
+    const dueDateLabel = createTextElement("strong", "Due Date:");
 
-        dueDateParagraph.append(
-            dueDateLabel,
-            document.createTextNode(` ${loan.dueDate}`)
-        );
+    dueDateParagraph.append(
+      dueDateLabel,
+      document.createTextNode(` ${loan.dueDate}`),
+    );
 
-        card.append(
-            heading,
-            borrowerParagraph,
-            dueDateParagraph
-        );
+    card.append(heading, borrowerParagraph, dueDateParagraph);
 
-        fragment.append(card);
-    });
+    fragment.append(card);
+  });
 
-    container.replaceChildren(fragment);
+  container.replaceChildren(fragment);
 }
 
 function openCheckoutModal(equipmentId) {
-    const modal = document.getElementById('checkout-modal');
-    const form = document.getElementById('checkout-form');
+  const modal = document.getElementById("checkout-modal");
+  const form = document.getElementById("checkout-form");
 
-    form.dataset.equipmentId = equipmentId;
+  form.dataset.equipmentId = equipmentId;
 
+  form.reset();
+
+  modal.showModal();
+}
+/**
+ * GT-101: Handle checkout form submission.
+ * Save the loan and update the equipment and active loans sections.
+ * @param {SubmitEvent} event - The checkout form submission event. 
+ */
+async function handleCheckout(event) {
+  // Prevents the page from reloading when submitting the form.
+  event.preventDefault();
+
+  const form = event.currentTarget;
+  const modal = document.getElementById("checkout-modal");
+
+  // Collect the borrower details and selected equipment ID.
+  const loanData = {
+    equipmentId: form.dataset.equipmentId,
+    borrowerName: document.getElementById("borrower-name").value.trim(),
+    borrowerEmail: document.getElementById("borrower-email").value.trim(),
+    dueDate: document.getElementById("return-date").value,
+  };
+
+  try {
+    // GT-101: Save the loan and update the equipment status.
+    await dataService.saveLoan(loanData);
+    // Close the modal and clear the form after saving.
+    modal.close();
     form.reset();
 
-    modal.showModal();
+    // Refresh both sections without reloading the page.
+    await renderEquipmentList();
+    await renderActiveLoans();
+  } catch (error) {
+    console.error("Unable to save the loan:", error);
+    alert("The checkout could not be completed. Please try again.");
+  }
 }
