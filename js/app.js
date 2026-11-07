@@ -1,3 +1,4 @@
+
 /**
  * Application entry point for rendering equipment and loan data.
  * @module app
@@ -8,7 +9,8 @@ import { dataService } from "./dataService.js";
 window.addEventListener("DOMContentLoaded", start);
 
 /**
- * Start the application and initialise event listeners.
+ * Initialise the application by rendering equipment and active loans
+ * and registering event listeners for user interactions.
  */
 function start() {
   renderEquipmentList();
@@ -35,13 +37,13 @@ function start() {
 }
 
 /**
- * GT-103: DOM-based XSS Mitigation
+ * GT-103: DOM-based XSS Mitigation.
  * Create an HTML element and insert dynamic content safely using textContent.
  * This prevents user-provided text from being interpreted as HTML.
  *
  * @param {string} elementName - HTML element name.
  * @param {string} text - Text to display.
- * @param {string} [className] - The CSS class to assign to the element.
+ * @param {string} [className] - Optional CSS class to assign to the element.
  * @returns {HTMLElement} The created element.
  */
 function createTextElement(elementName, text, className) {
@@ -60,6 +62,9 @@ function createTextElement(elementName, text, className) {
  * GT-102: Filter equipment based on the selected category.
  * GT-101: Display a Checkout button for available equipment.
  * GT-103: Display dynamic equipment information safely.
+ * GT-104: Reflect equipment availability after a loan is returned.
+ *
+ * @returns {Promise<void>}
  */
 async function renderEquipmentList() {
   const container = document.getElementById("equipment-list");
@@ -119,16 +124,24 @@ async function renderEquipmentList() {
 }
 
 /**
- * GT-103: Render loan information using safe DOM methods.
- * Borrower names, email addresses and due dates are inserted as text nodes so that user-provided values are not interpreted as HTML.
+ * Render active loan information using safe DOM methods.
+ * GT-103: Display borrower details as text rather than HTML.
+ * GT-104: Exclude returned loans and provide a Mark Returned button
+ * for each active loan.
+ *
+ * @returns {Promise<void>}
  */
 async function renderActiveLoans() {
   const container = document.getElementById("active-loans-list");
+
+  // GT-104: Retrieve only active loans, excluding returned equipment.
   const loans = (await dataService.getLoans()).filter(
     (loan) => loan.status === "active",
   );
+
   const equipment = await dataService.getEquipment();
 
+  // Display a message when no active loans remain.
   if (loans.length === 0) {
     container.replaceChildren(createTextElement("p", "No active loans."));
     return;
@@ -169,22 +182,22 @@ async function renderActiveLoans() {
 
     card.append(heading, borrowerParagraph, dueDateParagraph);
 
-    if (loan.status === "active") {
-      const returnButton = document.createElement("button");
-      returnButton.type = "button";
-      returnButton.textContent = "Mark Returned";
-      returnButton.classList.add("return-button");
+    // GT-104: Create a return button for each active loan.
+    const returnButton = document.createElement("button");
+    returnButton.type = "button";
+    returnButton.textContent = "Mark Returned";
+    returnButton.classList.add("return-button");
 
-      returnButton.addEventListener("click", () => {
-        handleReturn(loan.id);
-      });
+    // Return the selected equipment when the button is clicked.
+    returnButton.addEventListener("click", () => {
+      handleReturn(loan.id);
+    });
 
-      card.append(returnButton);
-    }
-
+    card.append(returnButton);
     fragment.append(card);
   });
 
+  // Update the Active Loans section without reloading the page.
   container.replaceChildren(fragment);
 }
 
@@ -193,6 +206,7 @@ async function renderActiveLoans() {
  * Store the equipment ID and reset the form before displaying it.
  *
  * @param {string} equipmentId - ID of the equipment being checked out.
+ * @returns {void}
  */
 function openCheckoutModal(equipmentId) {
   const modal = document.getElementById("checkout-modal");
@@ -209,9 +223,11 @@ function openCheckoutModal(equipmentId) {
 
 /**
  * GT-101: Handle checkout form submission.
- * Save the loan and refresh the equipment and active loans sections without reloading the page.
+ * Save the loan and refresh the equipment and active loans sections
+ * without reloading the page.
  *
  * @param {SubmitEvent} event - The checkout form submission event.
+ * @returns {Promise<void>}
  */
 async function handleCheckout(event) {
   // Prevent the page from reloading when submitting the form.
@@ -240,24 +256,35 @@ async function handleCheckout(event) {
     await renderEquipmentList();
     await renderActiveLoans();
   } catch (error) {
-    // Report any errors encountered during the checkout process.
     console.error("Unable to save the loan:", error);
     alert("The checkout could not be completed. Please try again.");
   }
 }
 
+/**
+ * GT-104: Handle the return of an active equipment loan.
+ * Update the loan and equipment statuses through dataService,
+ * then refresh both sections without reloading the page.
+ *
+ * @param {string} loanId - ID of the loan being returned.
+ * @returns {Promise<void>}
+ */
 async function handleReturn(loanId) {
   try {
+    // Mark the loan as returned and make the equipment available.
     const success = await dataService.returnLoan(loanId);
 
+    // Stop if the loan could not be returned.
     if (!success) {
-      alert("The loan could not be returned");
+      alert("The loan could not be returned.");
       return;
     }
 
+    // Refresh both sections to reflect the updated statuses.
     await renderEquipmentList();
     await renderActiveLoans();
   } catch (error) {
+    // Report any errors encountered during the return process.
     console.error("Unable to return the loan:", error);
     alert("An error occurred while returning the equipment.");
   }
