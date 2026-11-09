@@ -74,7 +74,7 @@
     margin-bottom: 4px;
 }
 
-/* Overdue Loan Highlight (For GT-104) */
+/* GT-105: Highlight overdue loans with a red border and background. */
 .loan-card.overdue {
     background-color: var(--danger-bg);
     border-color: #feb2b2;
@@ -84,6 +84,19 @@
 .loan-card.overdue p {
     color: var(--danger-text);
 }
+
+/* GT-105: Display the overdue loan count as a status pill. */
+.overdue-counter {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 12px;
+    border-radius: 20px;
+    background-color: var(--danger-bg);
+    color: var(--danger-text);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
 
 /* Buttons & Inputs (For GT-101) */
 .btn {
