@@ -1,4 +1,3 @@
-
 /**
  * Application entry point for rendering equipment and loan data.
  * @module app
@@ -55,6 +54,16 @@ function createTextElement(elementName, text, className) {
   }
 
   return element;
+}
+
+function isLoanOverdue(dueDate) {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+
+  const todayString = `${year}-${month}-${day}`;
+  return dueDate < todayString;
 }
 
 /**
@@ -126,8 +135,8 @@ async function renderEquipmentList() {
 /**
  * Render active loan information using safe DOM methods.
  * GT-103: Display borrower details as text rather than HTML.
- * GT-104: Exclude returned loans and provide a Mark Returned button
- * for each active loan.
+ * GT-104: Exclude returned loans and provide a Mark Returned button.
+ * GT-105: Highlight overdue loans and update the overdue counter.
  *
  * @returns {Promise<void>}
  */
@@ -140,6 +149,13 @@ async function renderActiveLoans() {
   );
 
   const equipment = await dataService.getEquipment();
+
+  const overdueCount = loans.filter((loan) =>
+    isLoanOverdue(loan.dueDate),
+  ).length;
+
+  const overdueCounter = document.getElementById("overdue-counter");
+  overdueCounter.textContent = `${overdueCount} Overdue Loans`;
 
   // Display a message when no active loans remain.
   if (loans.length === 0) {
@@ -158,6 +174,10 @@ async function renderActiveLoans() {
     const card = document.createElement("div");
     card.classList.add("loan-card");
     card.dataset.loanId = loan.id;
+
+    if (isLoanOverdue(loan.dueDate)) {
+        card.classList.add("overdue");
+    }
 
     const heading = createTextElement(
       "h4",
