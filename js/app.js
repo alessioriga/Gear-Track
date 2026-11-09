@@ -56,13 +56,24 @@ function createTextElement(elementName, text, className) {
   return element;
 }
 
+/**
+ * GT-105: Check whether a loan is overdue.
+ * Compare the due date with today's local date using the YYYY-MM-DD format.
+ *
+ * @param {string} dueDate - The loan's due date in YYYY-MM-DD format.
+ * @returns {boolean} True if the due date is before today, otherwise false.
+ */
 function isLoanOverdue(dueDate) {
+  // Get today's date using the local time zone.
   const today = new Date();
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, "0");
   const day = String(today.getDate()).padStart(2, "0");
 
+  // Format today's date to match the dates stored in localStorage.
   const todayString = `${year}-${month}-${day}`;
+
+  // Compare the dates to determine whether the loan is overdue.
   return dueDate < todayString;
 }
 
@@ -150,10 +161,12 @@ async function renderActiveLoans() {
 
   const equipment = await dataService.getEquipment();
 
+  // GT-105: Count active loans with a due date earlier than today.
   const overdueCount = loans.filter((loan) =>
     isLoanOverdue(loan.dueDate),
   ).length;
 
+  // Display the number of overdue loans in the Active Loans panel.
   const overdueCounter = document.getElementById("overdue-counter");
   overdueCounter.textContent = `${overdueCount} Overdue Loans`;
 
@@ -175,8 +188,9 @@ async function renderActiveLoans() {
     card.classList.add("loan-card");
     card.dataset.loanId = loan.id;
 
+    // GT-105: Apply the overdue class to loans past their return date.
     if (isLoanOverdue(loan.dueDate)) {
-        card.classList.add("overdue");
+      card.classList.add("overdue");
     }
 
     const heading = createTextElement(
