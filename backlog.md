@@ -82,7 +82,7 @@ Add a real-time search bar above the equipment list so staff can quickly locate 
 
 ## [GT-107] Feature: Department Usage Stats Dashboard (Complexity: High)
 
-**Status:** To Do
+**Status:** In Progress
 
 **Description:**
 Add an analytics summary bar at the top of the application to give staff immediate visibility into department inventory utilisation.
