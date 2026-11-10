@@ -135,3 +135,38 @@ No significant problems were encountered during implementation or testing. Durin
 I learned how to update related records in `localStorage` and maintain consistency between equipment and loan information. I also improved my understanding of filtering data based on its status and updating multiple interface sections after a user action.
 
 **Next step:** Implement the remaining optional feature tickets.
+
+## GT-105 – Overdue Loan Highlight & Notification
+
+**Reason for selection:**
+
+I selected GT-105 as one of the optional tickets because it improves the application's ability to manage equipment loans. Highlighting overdue loans helps department staff identify equipment that has not been returned on time and makes important information easier to recognise.
+
+**Status:** Implementation and testing completed.
+
+**Work completed:**
+
+- Added an `isLoanOverdue()` function to compare loan due dates with the current date.
+- Used the `YYYY-MM-DD` date format to compare dates consistently.
+- Added the `.overdue` CSS class to active loan cards when their due dates have passed.
+- Used a red border and a light red background to highlight overdue loans.
+- Added an overdue counter to the Active Loans panel.
+- Updated the counter dynamically whenever the active loans are rendered.
+- Preserved the existing checkout and return functionality.
+
+**Testing:**
+
+- Confirmed that the overdue counter displays the correct number of overdue loans.
+- Confirmed that overdue loan cards are highlighted with a red border and background.
+- Verified that loans which are not overdue retain their normal appearance.
+- Confirmed that returning an overdue loan removes it from Active Loans and automatically updates the counter.
+
+**Problems encountered:**
+
+No significant problems were encountered during implementation or testing. The existing CSS file already contained styling for overdue loans, so only the comment needed correcting and the overdue counter styling had to be added.
+
+**Learning outcomes:**
+
+I learned how to compare dates in JavaScript, apply CSS classes conditionally and update a status counter based on application data. I also improved my understanding of how visual feedback can help users identify important information.
+
+**Next step:** GT-107 – Department Usage Stats Dashboard.
