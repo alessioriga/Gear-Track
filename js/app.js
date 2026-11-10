@@ -14,6 +14,7 @@ window.addEventListener("DOMContentLoaded", start);
 function start() {
   renderEquipmentList();
   renderActiveLoans();
+  renderStats();
 
   // GT-102: Get the category filter used to filter equipment.
   const categoryFilter = document.getElementById("category-filter");
@@ -54,6 +55,15 @@ function createTextElement(elementName, text, className) {
   }
 
   return element;
+}
+
+async function renderStats() {
+    const stats = await dataService.getStats();
+
+    document.getElementById("stat-total-items").textContent = start.totalItems;
+    document.getElementById("stat-currently-loaned").textContent = `${stats.currentlyLoaned}%`;
+    document.getElementById("stat-overdue-items").textContent + stats.overdueItems;
+    
 }
 
 /**
@@ -289,6 +299,7 @@ async function handleCheckout(event) {
     // Refresh both sections without reloading the page.
     await renderEquipmentList();
     await renderActiveLoans();
+    renderStats();
   } catch (error) {
     console.error("Unable to save the loan:", error);
     alert("The checkout could not be completed. Please try again.");
@@ -317,6 +328,7 @@ async function handleReturn(loanId) {
     // Refresh both sections to reflect the updated statuses.
     await renderEquipmentList();
     await renderActiveLoans();
+    await renderStats();
   } catch (error) {
     // Report any errors encountered during the return process.
     console.error("Unable to return the loan:", error);
