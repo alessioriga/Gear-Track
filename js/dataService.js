@@ -1,12 +1,11 @@
-
 /**
  * Storage keys used in localStorage for this application.
  * @readonly
  * @enum {string}
  */
 const STORAGE_KEYS = {
-    EQUIPMENT: 'geartrack_equipment',
-    LOANS: 'geartrack_loans'
+  EQUIPMENT: "geartrack_equipment",
+  LOANS: "geartrack_loans",
 };
 
 /**
@@ -43,10 +42,25 @@ const STORAGE_KEYS = {
  * @type {Equipment[]}
  */
 const initialEquipment = [
-    { id: 'EQ-101', name: 'Canon EOS R6', category: 'Cameras', status: 'available' },
-    { id: 'EQ-102', name: 'Sony FX3', category: 'Cameras', status: 'loaned' },
-    { id: 'EQ-103', name: 'Manfrotto Tripod', category: 'Accessories', status: 'available' },
-    { id: 'EQ-104', name: 'MacBook Pro 16"', category: 'Laptops', status: 'available' }
+  {
+    id: "EQ-101",
+    name: "Canon EOS R6",
+    category: "Cameras",
+    status: "available",
+  },
+  { id: "EQ-102", name: "Sony FX3", category: "Cameras", status: "loaned" },
+  {
+    id: "EQ-103",
+    name: "Manfrotto Tripod",
+    category: "Accessories",
+    status: "available",
+  },
+  {
+    id: "EQ-104",
+    name: 'MacBook Pro 16"',
+    category: "Laptops",
+    status: "available",
+  },
 ];
 
 /**
@@ -54,14 +68,14 @@ const initialEquipment = [
  * @type {Loan[]}
  */
 const initialLoans = [
-    {
-        id: 'LN-501',
-        equipmentId: 'EQ-102',
-        borrowerName: 'Alex Root',
-        borrowerEmail: 'alexroot@college.ac.uk',
-        dueDate: '2026-08-15',
-        status: 'active'
-    }
+  {
+    id: "LN-501",
+    equipmentId: "EQ-102",
+    borrowerName: "Alex Root",
+    borrowerEmail: "alexroot@college.ac.uk",
+    dueDate: "2026-08-15",
+    status: "active",
+  },
 ];
 
 /**
@@ -69,13 +83,16 @@ const initialLoans = [
  * This ensures the application has initial data to display on first load.
  */
 function seedInitialData() {
-    if (!localStorage.getItem(STORAGE_KEYS.EQUIPMENT)) {
-        localStorage.setItem(STORAGE_KEYS.EQUIPMENT, JSON.stringify(initialEquipment));
-    }
+  if (!localStorage.getItem(STORAGE_KEYS.EQUIPMENT)) {
+    localStorage.setItem(
+      STORAGE_KEYS.EQUIPMENT,
+      JSON.stringify(initialEquipment),
+    );
+  }
 
-    if (!localStorage.getItem(STORAGE_KEYS.LOANS)) {
-        localStorage.setItem(STORAGE_KEYS.LOANS, JSON.stringify(initialLoans));
-    }
+  if (!localStorage.getItem(STORAGE_KEYS.LOANS)) {
+    localStorage.setItem(STORAGE_KEYS.LOANS, JSON.stringify(initialLoans));
+  }
 }
 
 seedInitialData();
@@ -84,95 +101,124 @@ seedInitialData();
  * Provides methods for managing equipment and loan data in localStorage.
  */
 export const dataService = {
-    /**
-     * Load equipment data from localStorage.
-     * @returns {Promise<Equipment[]>} Array of equipment items.
-     */
-    async getEquipment() {
-        const data = localStorage.getItem(STORAGE_KEYS.EQUIPMENT);
-        return JSON.parse(data) || [];
-    },
+  /**
+   * Load equipment data from localStorage.
+   * @returns {Promise<Equipment[]>} Array of equipment items.
+   */
+  async getEquipment() {
+    const data = localStorage.getItem(STORAGE_KEYS.EQUIPMENT);
+    return JSON.parse(data) || [];
+  },
 
-    /**
-     * Load loan data from localStorage.
-     * @returns {Promise<Loan[]>} Array of loan records.
-     */
-    async getLoans() {
-        const data = localStorage.getItem(STORAGE_KEYS.LOANS);
-        return JSON.parse(data) || [];
-    },
+  /**
+   * Load loan data from localStorage.
+   * @returns {Promise<Loan[]>} Array of loan records.
+   */
+  async getLoans() {
+    const data = localStorage.getItem(STORAGE_KEYS.LOANS);
+    return JSON.parse(data) || [];
+  },
 
-    /**
-     * GT-101: Save a new loan record and update the equipment status.
-     *
-     * @param {NewLoanData} loanData - Information about the new loan.
-     * @returns {Promise<Loan>} The newly created loan record.
-     */
-    async saveLoan(loanData) {
-        const loans = await this.getLoans();
+  /**
+   * GT-101: Save a new loan record and update the equipment status.
+   *
+   * @param {NewLoanData} loanData - Information about the new loan.
+   * @returns {Promise<Loan>} The newly created loan record.
+   */
+  async saveLoan(loanData) {
+    const loans = await this.getLoans();
 
-        // Create a new active loan record.
-        const newLoan = {
-            id: `LN-${Date.now().toString().slice(-4)}`,
-            status: 'active',
-            ...loanData
-        };
+    // Create a new active loan record.
+    const newLoan = {
+      id: `LN-${Date.now().toString().slice(-4)}`,
+      status: "active",
+      ...loanData,
+    };
 
-        // Save the new loan to localStorage.
-        loans.push(newLoan);
-        localStorage.setItem(STORAGE_KEYS.LOANS, JSON.stringify(loans));
+    // Save the new loan to localStorage.
+    loans.push(newLoan);
+    localStorage.setItem(STORAGE_KEYS.LOANS, JSON.stringify(loans));
 
-        // Find the equipment associated with the new loan.
-        const equipment = await this.getEquipment();
-        const item = equipment.find(e => e.id === loanData.equipmentId);
+    // Find the equipment associated with the new loan.
+    const equipment = await this.getEquipment();
+    const item = equipment.find((e) => e.id === loanData.equipmentId);
 
-        if (item) {
-            // Mark the equipment as loaned.
-            item.status = 'loaned';
-            localStorage.setItem(STORAGE_KEYS.EQUIPMENT, JSON.stringify(equipment));
-        }
-
-        return newLoan;
-    },
-
-    /**
-     * GT-104: Mark an active loan as returned and make its equipment available.
-     *
-     * @param {string} loanId - ID of the loan being returned.
-     * @returns {Promise<boolean>} True if the loan was returned successfully, otherwise false.
-     */
-    async returnLoan(loanId) {
-        const loans = await this.getLoans();
-
-        // Find the active loan matching the provided ID.
-        const loan = loans.find(
-            loan => loan.id === loanId && loan.status === 'active'
-        );
-
-        // Stop if the loan does not exist or has already been returned.
-        if (!loan) {
-            return false;
-        }
-
-        // Find the equipment associated with the loan.
-        const equipment = await this.getEquipment();
-        const item = equipment.find(
-            item => item.id === loan.equipmentId
-        );
-
-        // Stop if the associated equipment cannot be found.
-        if (!item) {
-            return false;
-        }
-
-        // Update the loan and equipment statuses.
-        loan.status = 'returned';
-        item.status = 'available';
-
-        // Save the updated information to localStorage.
-        localStorage.setItem(STORAGE_KEYS.LOANS, JSON.stringify(loans));
-        localStorage.setItem(STORAGE_KEYS.EQUIPMENT, JSON.stringify(equipment));
-
-        return true;
+    if (item) {
+      // Mark the equipment as loaned.
+      item.status = "loaned";
+      localStorage.setItem(STORAGE_KEYS.EQUIPMENT, JSON.stringify(equipment));
     }
+
+    return newLoan;
+  },
+
+  /**
+   * GT-104: Mark an active loan as returned and make its equipment available.
+   *
+   * @param {string} loanId - ID of the loan being returned.
+   * @returns {Promise<boolean>} True if the loan was returned successfully, otherwise false.
+   */
+  async returnLoan(loanId) {
+    const loans = await this.getLoans();
+
+    // Find the active loan matching the provided ID.
+    const loan = loans.find(
+      (loan) => loan.id === loanId && loan.status === "active",
+    );
+
+    // Stop if the loan does not exist or has already been returned.
+    if (!loan) {
+      return false;
+    }
+
+    // Find the equipment associated with the loan.
+    const equipment = await this.getEquipment();
+    const item = equipment.find((item) => item.id === loan.equipmentId);
+
+    // Stop if the associated equipment cannot be found.
+    if (!item) {
+      return false;
+    }
+
+    // Update the loan and equipment statuses.
+    loan.status = "returned";
+    item.status = "available";
+
+    // Save the updated information to localStorage.
+    localStorage.setItem(STORAGE_KEYS.LOANS, JSON.stringify(loans));
+    localStorage.setItem(STORAGE_KEYS.EQUIPMENT, JSON.stringify(equipment));
+
+    return true;
+  },
+
+  async getStats() {
+    const equipment = await this.getEquipment();
+    const loans = await this.getLoans();
+
+    const totalItems = equipment.length;
+
+    const loanedItems = equipment.filter(
+      (items) => item.status === "loaned",
+    ).length;
+
+    const currentlyLoaned =
+      totalItems === 0 ? 0 : Math.round((loanedItems / totalItems) * 100);
+
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+
+    const todayString = `${year}-${month}-${day}`;
+
+    const overdueItems = loans.filter(
+      (loan) => loan.status === "active" && loan.dueDate < todayString,
+    ).length;
+
+    return {
+      totalItems,
+      currentlyLoaned,
+      overdueItems,
+    };
+  },
 };
