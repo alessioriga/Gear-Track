@@ -196,8 +196,12 @@ export const dataService = {
    * Use the current equipment and loan records to calculate
    * total items, the percentage currently loaned and overdue items.
    *
-   * @returns {Promise<{totalItems: number, currentlyLoaned: number, overdueItems: number}>}
-   * An object containing the calculated statistics.
+   * @returns {Promise<{
+   *   totalItems: number,
+   *   currentlyLoaned: number,
+   *   overdueItems: number,
+   *   categoryUsage: Array<{category: string, totalLoans: number}>
+   * }>} The calculated department statistics.
    */
   async getStats() {
     const equipment = await this.getEquipment();
@@ -229,10 +233,28 @@ export const dataService = {
       (loan) => loan.status === "active" && loan.dueDate < todayString,
     ).length;
 
+    // GT-107: Get all unique equipment categories.
+    const categories = [...new Set(equipment.map((item) => item.category))];
+
+    // Calculate the total number of loans for each category.
+    const categoryUsage = categories.map((category) => {
+      const totalLoans = loans.filter((loan) => {
+        const item = equipment.find((item) => item.id === loan.equipmentId);
+
+        return item?.category === category;
+      }).length;
+
+      return {
+        category,
+        totalLoans,
+      };
+    });
+
     return {
       totalItems,
       currentlyLoaned,
       overdueItems,
+      categoryUsage,
     };
   },
 };
