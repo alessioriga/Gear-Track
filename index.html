@@ -34,19 +34,25 @@
         </section>
       </section>
 
-      <!-- GT-107: Display equipment usage statistics by category. -->
+      <!-- GT-107: Switch between List and Chart views. -->
       <section class="panel usage-section" aria-labelledby="usage-heading">
         <h2 id="usage-heading">Equipment Usage by Category</h2>
 
         <p>Total loans, including returned equipment.</p>
 
-        <!-- Allow users to switch between list and chart views. -->
-        <button type="button" id="show-list" aria-pressed="true">List</button>
+        <fieldset class="view-toggle">
+          <legend class="visually-hidden">Choose statistics view</legend>
+          <input
+            type="radio"
+            name="usage-view"
+            id="view-list"
+            value="list checked"
+          />
+          <label for="view-list">List</label>
 
-        <button type="button" id="show-chart" aria-pressed="false">
-          Bar Chart
-        </button>
-
+          <input type="radio" name="usage-view" id="view-chart" value="chart" />
+          <label for="view-chart">Chart</label>
+        </fieldset>
         <!-- List View: Display category usage as a table. -->
         <table id="usage-table">
           <thead>
