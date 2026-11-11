@@ -38,6 +38,16 @@ function start() {
 
   // GT-101: Handle the checkout form submission.
   checkoutForm.addEventListener("submit", handleCheckout);
+
+  const updateUsageViewOptions = document.querySelectorAll(
+    'input[name="usage-view"]'
+  );
+
+  updateUsageViewOptions.forEach((option) => {
+    option.addEventListener("change", updateUsageView)
+  });
+
+  updateUsageView();
 }
 
 /**
