@@ -84,12 +84,21 @@ async function renderStats() {
     stats.overdueItems;
 }
 
+/**
+ * GT-107: Render equipment usage statistics by category.
+ * Display the total number of loans for each category in a table
+ * using safe DOM methods.
+ *
+ * @returns {Promise<void>}
+ */
 async function renderCategoryUsage() {
+  // Retrieve the latest equipment usage statistics.
   const stats = await dataService.getStats();
   const container = document.getElementById("usage-list");
 
   const fragment = document.createDocumentFragment();
 
+  // Create a table row for each equipment category.
   stats.categoryUsage.forEach((item) => {
     const row = document.createElement("tr");
 
@@ -100,8 +109,8 @@ async function renderCategoryUsage() {
     fragment.append(row);
   });
 
+  // Replace the existing table rows with the updated statistics.
   container.replaceChildren(fragment);
-  
 }
 
 /**
@@ -365,10 +374,12 @@ async function handleReturn(loanId) {
       return;
     }
 
-    // GT-107: Refresh equipment, active loans and dashboard statistics.
+    // GT-107: Refresh all dashboard sections after returning equipment.
     await renderEquipmentList();
     await renderActiveLoans();
     await renderStats();
+    await renderCategoryUsage();
+
   } catch (error) {
     // Report any errors encountered during the return process.
     console.error("Unable to return the loan:", error);
