@@ -193,14 +193,18 @@ export const dataService = {
 
   /**
    * GT-107: Calculate department equipment usage statistics.
-   * Use the current equipment and loan records to calculate
-   * total items, the percentage currently loaned and overdue items.
+   * Calculate inventory totals, loan percentages, overdue items
+   * and equipment usage by category.
    *
    * @returns {Promise<{
    *   totalItems: number,
    *   currentlyLoaned: number,
    *   overdueItems: number,
-   *   categoryUsage: Array<{category: string, totalLoans: number}>
+   *   categoryUsage: Array<{
+   *     category: string,
+   *     totalLoans: number,
+   *     activeLoans: number
+   *   }>
    * }>} The calculated department statistics.
    */
   async getStats() {
@@ -236,17 +240,27 @@ export const dataService = {
     // GT-107: Get all unique equipment categories.
     const categories = [...new Set(equipment.map((item) => item.category))];
 
-    // Calculate the total number of loans for each category.
+    // GT-107: Calculate total and active loans for each category.
     const categoryUsage = categories.map((category) => {
-      const totalLoans = loans.filter((loan) => {
+      // Find all loans associated with this equipment category.
+      const categoryLoans = loans.filter((loan) => {
         const item = equipment.find((item) => item.id === loan.equipmentId);
 
         return item?.category === category;
-      }).length;
+      });
+
+      // Count all loans, including returned loans.
+      const totalLoans = categoryLoans.length;
+
+      // Count only loans that are currently active.
+      const activeLoans = categoryLoans.filter(
+        (loan) => loan.status === "active",
+      ).length;
 
       return {
         category,
         totalLoans,
+        activeLoans,
       };
     });
 
