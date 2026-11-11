@@ -123,3 +123,43 @@
 .btn-secondary:hover {
     background-color: #4a5568;
 }
+
+/* GT-107: Department Usage Statistics */
+
+/* Arrange the summary cards in a responsive grid. */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+/* Style each statistics card to match the existing dashboard. */
+.stat-card {
+    padding: 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Style the heading of each statistics card. */
+.stat-card h2 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+/* Emphasise the calculated statistics. */
+.stat-card p {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+/* Display the cards vertically on smaller screens. */
+@media (max-width: 600px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
