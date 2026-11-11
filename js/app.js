@@ -113,6 +113,15 @@ async function renderCategoryUsage() {
   container.replaceChildren(fragment);
 }
 
+function updateUsageView() {
+  const chartSelected = document.getElementById("usage-table");
+  const chartPanel = document.getElementById("usage-chart-panel");
+
+  usageTable.hidden = chartSelected;
+
+  chartPanel.hidden = !chartSelected;
+}
+
 /**
  * GT-105: Check whether a loan is overdue.
  * Compare the due date with today's local date using the YYYY-MM-DD format.
