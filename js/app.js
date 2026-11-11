@@ -113,14 +113,25 @@ async function renderCategoryUsage() {
   container.replaceChildren(fragment);
 }
 
+/**
+ * GT-107: Switch between the List and Chart views.
+ * Show the selected view and hide the other without reloading the page.
+ *
+ * @returns {void}
+ */
 function updateUsageView() {
-  const chartSelected = document.getElementById("usage-table");
+  const chartSelected = document.getElementById("view-chart").checked;
+
+  const usageTable = document.getElementById("usage-table");
   const chartPanel = document.getElementById("usage-chart-panel");
 
+  // GT-107: Show the chart when Chart is selected.
   usageTable.hidden = chartSelected;
 
+  // Show the table when List is selected.
   chartPanel.hidden = !chartSelected;
 }
+
 
 /**
  * GT-105: Check whether a loan is overdue.
