@@ -8,9 +8,12 @@ import { dataService } from "./dataService.js";
 window.addEventListener("DOMContentLoaded", start);
 
 /**
- * Initialise the application by rendering equipment and active loans
- * and registering event listeners for user interactions.
+ * Initialise the application and register event listeners.
+ * Render the equipment list, active loans and department statistics.
+ *
+ * @returns {void}
  */
+
 function start() {
   renderEquipmentList();
   renderActiveLoans();
@@ -57,13 +60,27 @@ function createTextElement(elementName, text, className) {
   return element;
 }
 
+/**
+ * GT-107: Render department equipment usage statistics.
+ * Retrieve the latest statistics from dataService and update
+ * the three summary cards without reloading the page.
+ *
+ * @returns {Promise<void>}
+ */
 async function renderStats() {
-    const stats = await dataService.getStats();
+  // Retrieve the latest statistics calculated by dataService.
+  const stats = await dataService.getStats();
 
-    document.getElementById("stat-total-items").textContent = start.totalItems;
-    document.getElementById("stat-currently-loaned").textContent = `${stats.currentlyLoaned}%`;
-    document.getElementById("stat-overdue-items").textContent + stats.overdueItems;
-    
+  // GT-107: Update the total number of equipment items.
+  document.getElementById("stat-total-items").textContent = stats.totalItems;
+
+  // Display the percentage of equipment currently loaned.
+  document.getElementById("stat-currently-loaned").textContent =
+    `${stats.currentlyLoaned}%`;
+
+  // Display the number of overdue equipment loans.
+  document.getElementById("stat-overdue-items").textContent =
+    stats.overdueItems;
 }
 
 /**
@@ -296,10 +313,10 @@ async function handleCheckout(event) {
     modal.close();
     form.reset();
 
-    // Refresh both sections without reloading the page.
+    // GT-107: Refresh equipment, active loans and dashboard statistics.
     await renderEquipmentList();
     await renderActiveLoans();
-    renderStats();
+    await renderStats();
   } catch (error) {
     console.error("Unable to save the loan:", error);
     alert("The checkout could not be completed. Please try again.");
@@ -325,7 +342,7 @@ async function handleReturn(loanId) {
       return;
     }
 
-    // Refresh both sections to reflect the updated statuses.
+    // GT-107: Refresh equipment, active loans and dashboard statistics.
     await renderEquipmentList();
     await renderActiveLoans();
     await renderStats();

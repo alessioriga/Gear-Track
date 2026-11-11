@@ -191,19 +191,32 @@ export const dataService = {
     return true;
   },
 
+  /**
+   * GT-107: Calculate department equipment usage statistics.
+   * Use the current equipment and loan records to calculate
+   * total items, the percentage currently loaned and overdue items.
+   *
+   * @returns {Promise<{totalItems: number, currentlyLoaned: number, overdueItems: number}>}
+   * An object containing the calculated statistics.
+   */
   async getStats() {
     const equipment = await this.getEquipment();
     const loans = await this.getLoans();
 
+    // GT-107: Count all equipment items in the inventory.
     const totalItems = equipment.length;
 
+    // Count equipment items currently marked as loaned.
     const loanedItems = equipment.filter(
-      (items) => item.status === "loaned",
+      (item) => item.status === "loaned",
     ).length;
 
+    // Calculate the percentage of equipment currently loaned.
+    // Prevent division by zero when the inventory is empty.
     const currentlyLoaned =
       totalItems === 0 ? 0 : Math.round((loanedItems / totalItems) * 100);
 
+    // Get today's local date in YYYY-MM-DD format.
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, "0");
@@ -211,6 +224,7 @@ export const dataService = {
 
     const todayString = `${year}-${month}-${day}`;
 
+    // Count active loans with a due date earlier than today.
     const overdueItems = loans.filter(
       (loan) => loan.status === "active" && loan.dueDate < todayString,
     ).length;
