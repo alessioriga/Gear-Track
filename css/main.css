@@ -57,6 +57,11 @@ body {
     gap: 24px;
 }
 
+/* GT-107: Display the statistics section across the full dashboard width. */
+.stats-section {
+    grid-column: 1 / -1;
+}
+
 @media (min-width: 768px) {
     .dashboard {
         grid-template-columns: 1fr 1fr;
