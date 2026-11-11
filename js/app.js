@@ -39,14 +39,16 @@ function start() {
   // GT-101: Handle the checkout form submission.
   checkoutForm.addEventListener("submit", handleCheckout);
 
-  const updateUsageViewOptions = document.querySelectorAll(
-    'input[name="usage-view"]'
+  // GT-107: Switch between List and Chart views.
+  const usageViewOptions = document.querySelectorAll(
+    'input[name="usage-view"]',
   );
 
-  updateUsageViewOptions.forEach((option) => {
-    option.addEventListener("change", updateUsageView)
+  usageViewOptions.forEach((option) => {
+    option.addEventListener("change", updateUsageView);
   });
 
+  // Apply the initially selected view.
   updateUsageView();
 }
 
@@ -141,7 +143,6 @@ function updateUsageView() {
   // Show the table when List is selected.
   chartPanel.hidden = !chartSelected;
 }
-
 
 /**
  * GT-105: Check whether a loan is overdue.
@@ -409,7 +410,6 @@ async function handleReturn(loanId) {
     await renderActiveLoans();
     await renderStats();
     await renderCategoryUsage();
-
   } catch (error) {
     // Report any errors encountered during the return process.
     console.error("Unable to return the loan:", error);
