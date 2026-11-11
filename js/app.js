@@ -125,23 +125,87 @@ async function renderCategoryUsage() {
   container.replaceChildren(fragment);
 }
 
+// GT-107: Store the chart instance so it can be updated later.
+let usageChart = null;
+
+/**
+ * GT-107: Render a bar chart showing total and active loans by category.
+ * Reuse the existing Chart.js instance when the data changes.
+ *
+ * @returns {Promise<void>}
+ */
+async function renderUsageChart() {
+  // Retrieve the latest category usage statistics.
+  const stats = await dataService.getStats();
+  const categories = stats.categoryUsage;
+
+  const labels = categories.map((item) => item.category);
+  const totalLoans = categories.map((item) => item.totalLoans);
+  const activeLoans = categories.map((item) => item.activeLoans);
+
+  // Update the existing chart instead of creating another instance.
+  if (usageChart) {
+    usageChart.data.labels = labels;
+    usageChart.data.datasets[0].data = totalLoans;
+    usageChart.data.datasets[1].data = activeLoans;
+    usageChart.update();
+    return;
+  }
+
+  // Create the bar chart using Chart.js.
+  const canvas = document.getElementById("usage-chart");
+
+  usageChart = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Total Loans",
+          data: totalLoans,
+          backgroundColor: "#3182ce",
+        },
+        {
+          label: "Active Loans",
+          data: activeLoans,
+          backgroundColor: "#38a169",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0,
+          },
+        },
+      },
+    },
+  });
+}
+
 /**
  * GT-107: Switch between the List and Chart views.
- * Show the selected view and hide the other without reloading the page.
+ * Display the selected view and render the chart when required.
  *
- * @returns {void}
+ * @returns {Promise<void>}
  */
-function updateUsageView() {
+async function updateUsageView() {
   const chartSelected = document.getElementById("view-chart").checked;
 
   const usageTable = document.getElementById("usage-table");
   const chartPanel = document.getElementById("usage-chart-panel");
 
-  // GT-107: Show the chart when Chart is selected.
+  // Show the selected view and hide the other.
   usageTable.hidden = chartSelected;
-
-  // Show the table when List is selected.
   chartPanel.hidden = !chartSelected;
+
+  // Render the chart only when its view is selected.
+  if (chartSelected) {
+    await renderUsageChart();
+  }
 }
 
 /**
