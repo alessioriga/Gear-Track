@@ -62,6 +62,12 @@ body {
     grid-column: 1 / -1;
 }
 
+/* GT-107: Display category usage across the full dashboard width. */
+.usage-section {
+    grid-column: 1 / -1;
+}
+
+
 @media (min-width: 768px) {
     .dashboard {
         grid-template-columns: 1fr 1fr;
