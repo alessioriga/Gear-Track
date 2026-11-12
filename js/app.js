@@ -96,9 +96,10 @@ async function renderStats() {
     stats.overdueItems;
 }
 
+
 /**
  * GT-107: Render equipment usage statistics by category.
- * Display the total number of loans for each category in a table
+ * Display total and active loan counts for each category in a table
  * using safe DOM methods.
  *
  * @returns {Promise<void>}
@@ -114,16 +115,19 @@ async function renderCategoryUsage() {
   stats.categoryUsage.forEach((item) => {
     const row = document.createElement("tr");
 
+    // Display the category name and its loan statistics.
     const categoryCell = createTextElement("td", item.category);
     const totalCell = createTextElement("td", item.totalLoans);
+    const activeCell = createTextElement("td", item.activeLoans);
 
-    row.append(categoryCell, totalCell);
+    row.append(categoryCell, totalCell, activeCell);
     fragment.append(row);
   });
 
   // Replace the existing table rows with the updated statistics.
   container.replaceChildren(fragment);
 }
+
 
 // GT-107: Store the chart instance so it can be updated later.
 let usageChart = null;
@@ -444,6 +448,11 @@ async function handleCheckout(event) {
     await renderStats();
     // GT-107: Update category usage after creating a loan.
     await renderCategoryUsage();
+
+    // GT-107: Update the chart if it has already been created.
+    if (usageChart) {
+      await renderUsageChart();
+    }
   } catch (error) {
     console.error("Unable to save the loan:", error);
     alert("The checkout could not be completed. Please try again.");
@@ -474,6 +483,11 @@ async function handleReturn(loanId) {
     await renderActiveLoans();
     await renderStats();
     await renderCategoryUsage();
+
+    // GT-107: Update the chart if it has already been created.
+    if (usageChart) {
+      await renderUsageChart();
+    }
   } catch (error) {
     // Report any errors encountered during the return process.
     console.error("Unable to return the loan:", error);
