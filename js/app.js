@@ -96,7 +96,6 @@ async function renderStats() {
     stats.overdueItems;
 }
 
-
 /**
  * GT-107: Render equipment usage statistics by category.
  * Display total and active loan counts for each category in a table
@@ -127,7 +126,6 @@ async function renderCategoryUsage() {
   // Replace the existing table rows with the updated statistics.
   container.replaceChildren(fragment);
 }
-
 
 // GT-107: Store the chart instance so it can be updated later.
 let usageChart = null;
