@@ -241,6 +241,50 @@
     border: 0;
 }
 
+/* GT-107: Ensure inactive statistics views remain hidden. */
+#usage-table[hidden],
+#usage-chart-panel[hidden] {
+    display: none;
+}
+
+
+/* GT-107: Style the equipment usage table. */
+#usage-table {
+    width: 100%;
+    margin-top: 16px;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+/* Style the table headings. */
+#usage-table th {
+    padding: 12px;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-weight: 600;
+    text-align: left;
+    border-bottom: 2px solid var(--border-color);
+}
+
+/* Style the table cells and separate each row. */
+#usage-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+
+/* Align numerical statistics to the right. */
+#usage-table th:not(:first-child),
+#usage-table td:not(:first-child) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Highlight table rows when the pointer is over them. */
+#usage-table tbody tr:hover {
+    background-color: var(--bg-color);
+}
+
 /* Reduce animations for users who prefer less motion. */
 @media (prefers-reduced-motion: reduce) {
     .view-toggle::before,
