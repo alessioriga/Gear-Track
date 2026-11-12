@@ -15,6 +15,8 @@ geartrack/
 ├── js/
 │   ├── app.js          # Main UI controller & DOM rendering logic
 │   └── dataService.js  # Data abstraction layer (localStorage engine)
+├── docs/
+│   └── progress-log.md # Development progress and testing records
 ├── README.md           # Project documentation & onboarding guide
 └── backlog.md          # Prioritised task backlog
 
