@@ -39,28 +39,30 @@ const STORAGE_KEYS = {
 
 /**
  * The initial equipment list used when localStorage is empty.
+ * Includes 15 equipment items across three categories.
  * @type {Equipment[]}
  */
 const initialEquipment = [
-  {
-    id: "EQ-101",
-    name: "Canon EOS R6",
-    category: "Cameras",
-    status: "available",
-  },
+  // Cameras
+  { id: "EQ-101", name: "Canon EOS R6", category: "Cameras", status: "available" },
   { id: "EQ-102", name: "Sony FX3", category: "Cameras", status: "loaned" },
-  {
-    id: "EQ-103",
-    name: "Manfrotto Tripod",
-    category: "Accessories",
-    status: "available",
-  },
-  {
-    id: "EQ-104",
-    name: 'MacBook Pro 16"',
-    category: "Laptops",
-    status: "available",
-  },
+  { id: "EQ-105", name: "Nikon Z6 III", category: "Cameras", status: "available" },
+  { id: "EQ-106", name: "Panasonic GH6", category: "Cameras", status: "available" },
+  { id: "EQ-107", name: "Sony A7 IV", category: "Cameras", status: "available" },
+
+  // Accessories
+  { id: "EQ-103", name: "Manfrotto Tripod", category: "Accessories", status: "available" },
+  { id: "EQ-108", name: "DJI RS 4", category: "Accessories", status: "available" },
+  { id: "EQ-109", name: "Rode VideoMic Pro+", category: "Accessories", status: "available" },
+  { id: "EQ-110", name: "Godox SL60W", category: "Accessories", status: "available" },
+  { id: "EQ-111", name: "Zoom H6", category: "Accessories", status: "available" },
+
+  // Laptops
+  { id: "EQ-104", name: 'MacBook Pro 16"', category: "Laptops", status: "available" },
+  { id: "EQ-112", name: "Dell XPS 15", category: "Laptops", status: "available" },
+  { id: "EQ-113", name: "Lenovo ThinkPad X1", category: "Laptops", status: "available" },
+  { id: "EQ-114", name: "HP ZBook", category: "Laptops", status: "available" },
+  { id: "EQ-115", name: "ASUS ProArt", category: "Laptops", status: "available" },
 ];
 
 /**
