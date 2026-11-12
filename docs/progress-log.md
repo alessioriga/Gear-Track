@@ -170,3 +170,118 @@ No significant problems were encountered during implementation or testing. The e
 I learned how to compare dates in JavaScript, apply CSS classes conditionally and update a status counter based on application data. I also improved my understanding of how visual feedback can help users identify important information.
 
 **Next step:** GT-107 – Department Usage Stats Dashboard.
+
+## GT-107 – Department Usage Stats Dashboard
+
+**Reason for selection:**
+
+I selected GT-107 as my second optional ticket because I wanted to improve how equipment usage information is presented. The existing application displayed equipment and active loans, but it did not provide an overview of department statistics. I also wanted to explore how charts could make this information easier to understand.
+
+**Status:** Implementation and functional testing completed.
+
+**Work completed:**
+
+- Added a `getStats()` method to `dataService.js` to calculate department usage statistics.
+- Calculated the total number of equipment items, percentage currently loaned and number of overdue items.
+- Added three summary cards to display these statistics.
+- Used JavaScript's `filter()`, `map()` and `Set` to calculate equipment usage by category.
+- Added a table displaying total and active loans for each category.
+- Integrated Chart.js to display the same statistics using a bar chart.
+- Added a segmented toggle to switch between List and Chart views.
+- Updated the dashboard automatically after equipment checkout and return actions.
+- Used safe DOM methods when creating and updating the table.
+
+**Testing:**
+
+- Confirmed that all three summary cards displayed the expected values.
+- Verified that the category table displayed the correct total and active loan counts.
+- Confirmed that the bar chart displayed the same data as the table.
+- Tested switching between List and Chart without refreshing the page.
+- Confirmed that returning equipment updated the dashboard statistics automatically.
+- Verified that the existing checkout, return, category filtering and overdue highlighting features continued to work.
+
+**Problems encountered:**
+
+- The dashboard layout initially placed the category usage section beside the equipment list, leaving unused space below. I corrected this by updating the CSS grid layout so that the category usage section spans the full dashboard width.
+- Additional styling was needed to ensure the inactive List or Chart view remained hidden.
+
+**Learning outcomes:**
+
+I learned how to calculate statistics from existing application data and present them using different visualisations. I also gained experience integrating Chart.js, updating an existing chart instance and using CSS Grid to organise a responsive dashboard.
+
+**Next step:** Expand the initial equipment and loan data to support more realistic testing.
+
+## Additional Improvement – Equipment Inventory and Loan History
+
+**Reason for implementation:**
+
+After completing GT-107, I noticed that the original dataset contained only four equipment items and one loan. I decided to expand the initial data to make the application more realistic and provide a better demonstration of the dashboard statistics.
+
+**Status:** Implementation and testing completed.
+
+**Work completed:**
+
+- Expanded the initial equipment inventory from 4 to 15 items.
+- Maintained the existing Cameras, Accessories and Laptops categories.
+- Added 25 fictional loan records, including 19 returned loans and 6 active loans.
+- Used fictional borrower names and example email addresses.
+- Updated the equipment statuses to match the active loan records.
+- Kept the additional data inside `dataService.js` rather than introducing a separate file.
+- Created a backup of the previous `localStorage` data before loading the new dataset.
+- Reset the GearTrack storage entries to allow the application to load the updated initial data.
+
+**Testing:**
+
+- Confirmed that the application displayed 15 equipment items.
+- Verified that the dashboard showed 40% of equipment currently loaned before additional testing.
+- Confirmed that the category statistics displayed 12 loans for Cameras, 8 for Accessories and 5 for Laptops.
+- Verified that six active loans appeared in the Active Loans section.
+- Confirmed that three loans were identified as overdue on 12 November 2026.
+- Returned the Sony A7 IV and confirmed that the currently loaned percentage decreased from 40% to 33%.
+- Verified that the total number of loans remained unchanged while the number of active camera loans decreased.
+
+**Problems encountered:**
+
+The initial data was not updated automatically because `seedInitialData()` only populates `localStorage` when the relevant storage entries do not exist. I used the browser Developer Tools to remove the existing GearTrack storage entries after creating a backup, allowing the updated data to be loaded.
+
+**Learning outcomes:**
+
+I improved my understanding of how initial data is stored and loaded using `localStorage`. I also learned why equipment availability must remain consistent with active loan records and how a larger dataset can help identify issues that may not appear with only a few records.
+
+**Next step:** Improve the visual consistency of the application.
+
+## Additional Improvement – Buttons and Checkout Form Styling
+
+**Reason for implementation:**
+
+After completing the functional requirements, I wanted to improve the visual consistency of the application. The existing action buttons and checkout form did not fully match the appearance of the updated dashboard.
+
+**Status:** Implementation and testing completed.
+
+**Work completed:**
+
+- Updated the Checkout button to use the application's primary colour.
+- Styled the Mark Returned button in green and the Cancel button in grey.
+- Added consistent padding, font sizes and rounded corners to action buttons.
+- Improved the checkout modal's spacing, width, border and background.
+- Styled the form labels and input fields for better readability.
+- Added hover effects and visible keyboard focus indicators.
+- Added support for reduced-motion preferences.
+- Preserved the existing checkout and return functionality without modifying the JavaScript logic.
+
+**Testing:**
+
+- Confirmed that the updated buttons displayed correctly.
+- Verified that the checkout modal opened and remained centred.
+- Checked that the form fields and labels were readable.
+- Confirmed that the Cancel button closed the modal.
+- Verified that the Confirm Checkout button continued to work.
+- Tested keyboard navigation and checked that focus indicators were visible.
+
+**Problems encountered:**
+
+No significant problems were encountered. The styling improvements were implemented within the existing `components.css` file without introducing additional dependencies.
+
+**Learning outcomes:**
+
+I improved my understanding of how CSS can create a consistent user interface without changing application behaviour. I also developed a better awareness of accessibility considerations, particularly keyboard focus indicators and reduced-motion preferences.
