@@ -285,6 +285,131 @@
     background-color: var(--bg-color);
 }
 
+/* GT-101: Style the checkout and return action buttons. */
+.checkout-button,
+.return-button,
+#checkout-form button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+/* Use the primary colour for checkout actions. */
+.checkout-button,
+#checkout-form button[type="submit"] {
+    background-color: var(--primary);
+    color: #ffffff;
+}
+
+.checkout-button:hover,
+#checkout-form button[type="submit"]:hover {
+    background-color: var(--primary-hover);
+}
+
+/* Use green for returning equipment. */
+.return-button {
+    background-color: #2f855a;
+    color: #ffffff;
+}
+
+.return-button:hover {
+    background-color: #276749;
+}
+
+/* Use grey for cancelling a checkout. */
+#cancel-checkout {
+    background-color: #718096;
+    color: #ffffff;
+}
+
+#cancel-checkout:hover {
+    background-color: #4a5568;
+}
+
+/* Provide visible keyboard focus for action buttons. */
+.checkout-button:focus-visible,
+.return-button:focus-visible,
+#checkout-form button:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 3px;
+}
+
+/* GT-101: Style the checkout modal to match the dashboard. */
+#checkout-modal {
+    width: min(440px, calc(100% - 32px));
+    max-height: calc(100vh - 32px);
+    margin: auto;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--card-bg);
+    color: var(--text-main);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* Dim the dashboard while the checkout modal is open. */
+#checkout-modal::backdrop {
+    background-color: rgba(0, 0, 0, 0.45);
+}
+
+/* Style the checkout modal heading. */
+#checkout-modal h2 {
+    margin-bottom: 20px;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* Arrange form controls vertically with consistent spacing. */
+#checkout-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Style the labels above each form field. */
+#checkout-form label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* Style the borrower details and return date fields. */
+#checkout-form input {
+    width: 100%;
+    padding: 11px 12px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: var(--text-main);
+    font: inherit;
+    box-sizing: border-box;
+}
+
+/* Highlight the currently focused input field. */
+#checkout-form input:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Add spacing above the form action buttons. */
+#checkout-form button[type="submit"] {
+    margin-top: 12px;
+}
+
+/* Respect reduced-motion accessibility preferences. */
+@media (prefers-reduced-motion: reduce) {
+    .checkout-button,
+    .return-button,
+    #checkout-form button {
+        transition: none;
+    }
+}
+
 /* Reduce animations for users who prefer less motion. */
 @media (prefers-reduced-motion: reduce) {
     .view-toggle::before,
